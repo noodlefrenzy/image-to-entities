@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OxfordUtilities", "OxfordUtilities.csproj", "{B1F0305A-C065-4F40-B40C-4AF23CF4B401}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OxfordUtilities.Test", "..\OxfordUtilities.Test\OxfordUtilities.Test.csproj", "{0B7B77A6-99BE-4F6D-B5FF-06925E38C788}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B1F0305A-C065-4F40-B40C-4AF23CF4B401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1F0305A-C065-4F40-B40C-4AF23CF4B401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1F0305A-C065-4F40-B40C-4AF23CF4B401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1F0305A-C065-4F40-B40C-4AF23CF4B401}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B7B77A6-99BE-4F6D-B5FF-06925E38C788}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B7B77A6-99BE-4F6D-B5FF-06925E38C788}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B7B77A6-99BE-4F6D-B5FF-06925E38C788}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B7B77A6-99BE-4F6D-B5FF-06925E38C788}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
