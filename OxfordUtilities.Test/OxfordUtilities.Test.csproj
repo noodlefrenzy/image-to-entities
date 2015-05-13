@@ -40,6 +40,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -57,6 +58,7 @@
     <Compile Include="TestImageToText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestTextToEntitiesAndIntent.cs" />
+    <Compile Include="TestImageUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OxfordUtilities\OxfordUtilities.csproj">

@@ -108,7 +108,7 @@ namespace OxfordUtilities.Test
         }
 
         [TestMethod]
-        public async Task TestOCRFromUri()
+        public async Task TestOCRFromMordor()
         {
             var apiKey = System.Environment.GetEnvironmentVariable("VISION_API_KEY");
             Assert.IsFalse(string.IsNullOrWhiteSpace(apiKey), "Must provide API Key");
@@ -116,10 +116,26 @@ namespace OxfordUtilities.Test
             var imageToText = new ImageToText(apiKey);
             var mordorImage = "http://i.imgur.com/5ocZvsW.jpg";
             var mordorTxt = new[] { "ONE DOES NOT", "SIMPLY", "OCR SOME TEXT FROM AN", "IMAGE" };
-            var result = await imageToText.ProcessImageToTextAsync(mordorImage);
+            var result = await imageToText.ProcessImageToTextAsync(await ImageUtilities.SingleChannelAsync(new Uri(mordorImage), ImageUtilities.Channel.Blue));
             var lines = ImageToText.ExtractLinesFromResponse(result).ToList();
             lines.RemoveAt(lines.Count - 1); // Remove memegenerator.net line
             CollectionAssert.AreEqual(mordorTxt, lines, "[{0}] != [{1}]", string.Join(",", mordorTxt), string.Join(",", lines));
+        }
+
+        [TestMethod]
+        public async Task TestOCRFromMorpheus()
+        {
+            var apiKey = System.Environment.GetEnvironmentVariable("VISION_API_KEY");
+            Assert.IsFalse(string.IsNullOrWhiteSpace(apiKey), "Must provide API Key");
+
+            var imageToText = new ImageToText(apiKey);
+            var morpheusImage = "http://i.imgur.com/1wL61Ro.jpg";
+            var morpheusText = new[] { "WHAT IF I TOLD", "YOU", "IT WAS STARING YOU RIGHT IN", "THE FACE?" };
+            var result = await imageToText.ProcessImageToTextAsync(await ImageUtilities.GammaAsync(new Uri(morpheusImage), 2.5));
+            var lines = ImageToText.ExtractLinesFromResponse(result).ToList();
+            Assert.IsTrue(lines.Any());
+            lines.RemoveAt(lines.Count - 1); // Remove memegenerator.net line
+            CollectionAssert.AreEqual(morpheusText, lines, "[{0}] != [{1}]", string.Join(",", morpheusText), string.Join(",", lines));
         }
     }
 }

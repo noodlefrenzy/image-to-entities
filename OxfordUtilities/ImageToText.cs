@@ -80,6 +80,22 @@ namespace OxfordUtilities
             return ProcessImageToTextAsync(new Uri(imageUri), language, detectOrientation);
         }
 
+        public async Task<JObject> ProcessImageToTextAsync(Stream stream, string language = DefaultLanguage, bool detectOrientation = DefaultDetectOrientation)
+        {
+            var ocrUri = string.Format(OCRURIFormat, language, detectOrientation);
+            var request = WebRequest.Create(ocrUri);
+            request.ContentType = "application/octet-stream";
+            request.Method = "POST";
+            request.Headers.Add(APIKeyHeader, this.apiKey);
+
+            using (var requestStream = await request.GetRequestStreamAsync().ConfigureAwait(false))
+            {
+                await stream.CopyToAsync(requestStream).ConfigureAwait(false);
+            }
+
+            return await _ReadResponseAsync(request, "stream").ConfigureAwait(false);
+        }
+
         public async Task<JObject> ProcessImageFileToTextAsync(string filename,
             string language = DefaultLanguage, bool detectOrientation = DefaultDetectOrientation, CancellationToken? cancelToken = null)
         {
