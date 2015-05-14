@@ -10,6 +10,74 @@ using System.Threading.Tasks;
 
 namespace OxfordUtilities
 {
+    public class BitmapLocker : IDisposable
+    {
+        public BitmapLocker(Bitmap bitmap, ImageLockMode lockMode = ImageLockMode.ReadWrite)
+        {
+            this.Bitmap = bitmap;
+            // GDI+ still lies to us - the return format is BGR, NOT RGB. 
+            this.BitmapData = this.Bitmap.LockBits(
+                new Rectangle(0, 0, this.Bitmap.Width, this.Bitmap.Height), lockMode, PixelFormat.Format24bppRgb);
+        }
+
+        public Bitmap Bitmap { get; private set; }
+        public BitmapData BitmapData { get; private set; }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    var bm = this.Bitmap;
+                    var bmData = this.BitmapData;
+                    this.Bitmap = null;
+                    this.BitmapData = null;
+                    bm.UnlockBits(bmData);
+                }
+                disposedValue = true;
+            }
+        }
+
+        ~BitmapLocker()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+    }
+
+    public class ConvolutionalFilter
+    {
+        public ConvolutionalFilter(double[][] matrix, double factor = 1, double offset = 0)
+        {
+            this.matrix = matrix;
+            this.factor = factor;
+            this.offset = offset;
+        }
+
+        public void Apply(Bitmap input, Bitmap output)
+        {
+            using (var inputLock = new BitmapLocker(input, ImageLockMode.ReadOnly))
+            using (var outputLock = new BitmapLocker(output))
+            {
+                // TBD
+            }
+        }
+
+        private double[][] matrix;
+        private double factor;
+        private double offset;
+    }
+
     /// <summary>
     /// Most (if not all) of these are taken/adapted from this great series of tutorials: http://www.codeproject.com/Articles/1989/Image-Processing-for-Dummies-with-C-and-GDI-Part
     /// </summary>
@@ -120,13 +188,10 @@ namespace OxfordUtilities
 
         private static void _ProcessBitmap(Bitmap imageData, Func<Tuple<byte, byte, byte>, Tuple<byte, byte, byte>> processRGB)
         {
-            // GDI+ still lies to us - the return format is BGR, NOT RGB. 
-            BitmapData bmData = imageData.LockBits(new Rectangle(0, 0, imageData.Width, imageData.Height),
-                ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-            try
+            using (var bmLock = new BitmapLocker(imageData))
             {
-                int stride = bmData.Stride;
-                System.IntPtr Scan0 = bmData.Scan0;
+                int stride = bmLock.BitmapData.Stride;
+                System.IntPtr Scan0 = bmLock.BitmapData.Scan0;
                 unsafe
                 {
                     byte* p = (byte*)(void*)Scan0;
@@ -151,11 +216,6 @@ namespace OxfordUtilities
                     }
                 }
             }
-            finally
-            {
-                imageData.UnlockBits(bmData);
-            }
-
         }
     }
 }
