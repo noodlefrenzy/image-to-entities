@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -136,6 +137,26 @@ namespace OxfordUtilities.Test
             Assert.IsTrue(lines.Any());
             lines.RemoveAt(lines.Count - 1); // Remove memegenerator.net line
             CollectionAssert.AreEqual(morpheusText, lines, "[{0}] != [{1}]", string.Join(",", morpheusText), string.Join(",", lines));
+        }
+
+        [TestMethod]
+        public async Task TestOCRFromRx()
+        {
+            var apiKey = System.Environment.GetEnvironmentVariable("VISION_API_KEY");
+            Assert.IsFalse(string.IsNullOrWhiteSpace(apiKey), "Must provide API Key");
+
+            var imageToText = new ImageToText(apiKey);
+            var rxFile = @"c:\dev\rximage.png";
+            var annotated = @"c:\dev\rximage_annotated.png";
+            var ocr = await imageToText.ProcessImageFileToTextAsync(rxFile);
+
+            using (Stream 
+                inStream = new FileStream(rxFile, FileMode.Open, FileAccess.Read),
+                annotatedStream = ImageUtilities.AnnotateImageWithOcrResults(inStream, ocr),
+                outStream = new FileStream(annotated, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                await annotatedStream.CopyToAsync(outStream);
+            }
         }
     }
 }

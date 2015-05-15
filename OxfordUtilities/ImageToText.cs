@@ -101,14 +101,17 @@ namespace OxfordUtilities
         {
             var tok = cancelToken ?? CancellationToken.None;
             var request = WebRequest.Create(string.Format(OCRURIFormat, language, detectOrientation));
-            request.ContentType = "application/octet-stream";
-            request.Method = "POST";
-
             using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-            using (var requestStream = await request.GetRequestStreamAsync().ConfigureAwait(false))
             {
                 request.ContentLength = fileStream.Length;
-                await fileStream.CopyToAsync(requestStream, 8192, tok).ConfigureAwait(false);
+                request.ContentType = "application/octet-stream";
+                request.Method = "POST";
+                request.Headers.Add(APIKeyHeader, this.apiKey);
+
+                using (var requestStream = await request.GetRequestStreamAsync().ConfigureAwait(false))
+                {
+                    await fileStream.CopyToAsync(requestStream, 8192, tok).ConfigureAwait(false);
+                }
             }
 
             return await _ReadResponseAsync(request, filename).ConfigureAwait(false);

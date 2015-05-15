@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace OxfordUtilities
 {
@@ -84,6 +85,34 @@ namespace OxfordUtilities
     public static class ImageUtilities
     {
         public enum Channel {  Red, Green, Blue };
+
+        public static Stream AnnotateImageWithOcrResults(Stream inputData, JObject ocrResults, ImageFormat outputFormat = null)
+        {
+            var orig = Bitmap.FromStream(inputData);
+            var bitmap = new Bitmap(orig.Width, orig.Height, PixelFormat.Format24bppRgb);
+
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.DrawImage(orig, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+
+                Func<string, Rectangle> BBRect = bbStr =>
+                {
+                    var split = bbStr.Split(',').Select(coordStr => int.Parse(coordStr)).ToArray();
+                    return new Rectangle(split[0], split[1], split[2], split[3]);
+                };
+                var pen = new Pen(Color.OrangeRed, 2);
+                (from r in ocrResults["regions"]
+                 from l in r["lines"]
+                 from w in l["words"]
+                 select BBRect((string)w["boundingBox"])).ToList()
+                 .ForEach(rect => g.DrawRectangle(pen, rect));
+            }
+
+            var outputStream = new MemoryStream();
+            bitmap.Save(outputStream, outputFormat ?? ImageFormat.Png);
+            outputStream.Position = 0;
+            return outputStream;
+        }
 
         /// <summary>
         /// Invert image pulled from URI
