@@ -23,7 +23,7 @@ namespace OxfordUtilities
 
         private readonly string apiKey;
 
-        private const string OCRURIFormat = "https://api.projectoxford.ai/vision/v1/ocr?language={0}&detectOrientation={1}";
+        private const string OCRURIFormat = "https://westus.api.cognitive.microsoft.com/vision/v1.0/ocr?language={0}&detectOrientation={1}";
 
         private const string DefaultLanguage = "unk";
 

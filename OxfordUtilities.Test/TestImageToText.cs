@@ -97,7 +97,6 @@ namespace OxfordUtilities.Test
         [TestMethod]
         public void TestExtractLinesWithLocationFromResponse()
         {
-            // Copied (and pruned) from Project Oxford OCR example response: https://dev.projectoxford.ai/docs/services/54ef139a49c3f70a50e79b7d/operations/5527970549c3f723cc5363e4
             var response = JObject.Parse(ExampleResponse);
 
             var expected = new[] {

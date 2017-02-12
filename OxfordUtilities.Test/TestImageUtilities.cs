@@ -8,7 +8,7 @@ namespace OxfordUtilities.Test
     [TestClass]
     public class TestImageUtilities
     {
-        public const string OutputRoot = @"e:\dev\test_images\";
+        public static string OutputRoot = Path.GetTempPath();
 
         [TestMethod]
         public async Task TestMordor()

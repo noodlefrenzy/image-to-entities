@@ -20,9 +20,8 @@ namespace OxfordUtilities.Test
             var luis = new TextToEntitiesAndIntent(luisApp, apiKey);
             var result = await luis.DetectEntitiesAndIntentFromText("ONE DOES NOT SIMPLY OCR SOME TEXT FROM AN IMAGE");
             Assert.IsNotNull(result);
-            Trace.TraceInformation(result.ToString(Newtonsoft.Json.Formatting.Indented));
-            Assert.AreEqual("Mordor", (string)(result["intents"][0]["intent"]));
-            Assert.AreEqual("ocr some text from an image", (string)(result["entities"][0]["entity"]));
+            Assert.AreEqual("Mordor", result.Intent);
+            Assert.AreEqual("ocr some text from an image", result.Entities["Subject1"].FullValue());
         }
 
         [TestMethod]
@@ -44,7 +43,6 @@ namespace OxfordUtilities.Test
 
             var luis = new TextToEntitiesAndIntent(luisApp, luisApiKey);
             var luisResult = await luis.DetectEntitiesAndIntentFromText(text);
-            Trace.TraceInformation(luisResult.ToString(Newtonsoft.Json.Formatting.Indented));
             Assert.IsNotNull(luisResult);
         }
     }

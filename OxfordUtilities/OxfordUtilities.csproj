@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ImageToText.cs" />
     <Compile Include="ImageUtilities.cs" />
+    <Compile Include="LUISResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextToEntitiesAndIntent.cs" />
   </ItemGroup>
